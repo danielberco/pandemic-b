@@ -6,7 +6,14 @@ using namespace std;
 using namespace pandemic;
 
 
-Board::Board()
+
+int &Board::operator[](City city)
+{
+    return cube[city];
+}
+
+
+Board::Board() 
 {
     for (int c = (int)City::Algiers; c <= (int)City::Washington; c++)
     {
@@ -16,10 +23,6 @@ Board::Board()
     station.clear();
 }
 
-int &Board::operator[](City city)
-{
-    return cube[city];
-}
 
 
 ostream &pandemic::operator<<(ostream &os, const Board &board)
