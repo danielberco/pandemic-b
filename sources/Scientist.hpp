@@ -14,8 +14,8 @@ class Scientist: public Player {
   public:
   
     Scientist(Board board, City city , int n):Player(board, city),n(n){ }
-    Player& discover_cure(Color color_dis);
-    const std::string role() const{
+    Player& discover_cure(Color color_dis) override;
+     std::string role() const override{
         return "Scientist";
     }
  };

@@ -1,3 +1,4 @@
+#pragma once
 #include "Board.hpp"
 #include "City.hpp"
 #include "Color.hpp"
@@ -9,8 +10,8 @@ namespace pandemic
 class OperationsExpert: public Player {
   public:
     OperationsExpert(Board board, City city):Player(board, city){}
-    Player& build();
-    const std::string role() const{
+    Player& build() override;
+     std::string role() const override{
         return "OperationsExpert";
     }
  };

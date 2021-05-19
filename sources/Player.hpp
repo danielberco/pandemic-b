@@ -31,7 +31,7 @@ public:
     
     virtual Player& treat(City city);
 
-    std::string role(){return playerRole;}
+   virtual std::string role() const =0;
 
     Player& take_card(City city);
 
