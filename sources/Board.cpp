@@ -28,7 +28,7 @@ void Board::build_station(City _city) {
 }
 
 bool Board::is_station(City _city) {
-    return station.contains(_city);
+    return (station.count(_city) !=0);
 }
 
 void Board::mark_cure(Color _color) {
@@ -40,7 +40,7 @@ bool Board::cure_discoverd(City _city) {
 }
 
 bool Board::is_connect(City& c1, City& c2) {
-    return connect.at(c1).contains(c2);
+    return (connect.at(c1).count(c2) == 1);
 }
 
 
