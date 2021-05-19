@@ -15,7 +15,7 @@ class Board {
     std::set<City> station;
 
 public :
-  Board(); //constructor
+  Board(){} //constructor
   int &operator[] (City c);
   friend std::ostream& operator<<(std::ostream& output, const Board& board);
   bool is_clean();
@@ -26,14 +26,5 @@ public :
   void build_station(City c);
   bool is_station(City c);
   void mark_cure(Color color);
-
-
-
-
-
-
-
-
- 
 };
   }

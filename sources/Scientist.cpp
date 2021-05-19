@@ -27,5 +27,5 @@ Player& Scientist::discover_cure(Color color){
          }
      }
      board.mark_cure(color);
-     *this;
+     return *this;
 }

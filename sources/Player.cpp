@@ -117,7 +117,7 @@ Player& Player::treat(City _city) {
     }
 
     if(board.cure_discoverd(_city)) {
-        board[_city] == 0;
+        board[_city] = 0;
     }
 
     else {
