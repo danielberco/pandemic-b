@@ -107,6 +107,28 @@ Player& Player::discover_cure(Color _color) {
     return *this;
 }
 
+Player& Player::treat(City _city) {
+    if (city == _city) {
+        throw std::invalid_argument {
+            "You cannot go to the same city" + cityStr(_city)};
+        }
+    if (board[_city] == 0) {
+                throw std::invalid_argument{"no more cubes in city " + cityStr(_city)};
+    }
+
+    if(board.cure_discoverd(_city)) {
+        board[_city] == 0;
+    }
+
+    else {
+        board[_city]--;
+    }
+    return *this;
+}
+
+
+
+
 
 
 
