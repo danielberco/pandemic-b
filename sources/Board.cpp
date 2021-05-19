@@ -2,6 +2,7 @@
 using namespace std;
 using namespace pandemic;
 
+
 int& Board::operator[](City _city) {
     return cube[_city];
 }
@@ -70,12 +71,6 @@ std::ostream& pandemic::operator<<(std::ostream& _output, const Board& board) {
         _output << "------------------------- End Board -------------------------" << endl;
         return _output;
 }
-
-
-
-
-
-
 
 std::map<City, std::set<City>> Board::connect {
     { Algiers, {Madrid, Paris, Istanbul, Cairo } },

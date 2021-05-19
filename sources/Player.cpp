@@ -26,7 +26,7 @@ Player& Player::fly_direct(City _city) {
             "You cannot fly to the same city" + cityStr(_city)};
     }
 
-    if(!cards.contains(city)) {
+    if(cards.count(city)==0) {
         throw std::invalid_argument {
             "You don't have the card of" + cityStr(_city)};
     }
@@ -42,7 +42,7 @@ Player& Player::fly_charter(City _city) {
             "You cannot fly to the same city" + cityStr(_city)};
     }
 
-    if(!cards.contains(city)) {
+    if(cards.count(city)==0) {
         throw std::invalid_argument {
             "You don't have the card of" + cityStr(_city)};
     }
@@ -67,7 +67,7 @@ Player& Player::fly_shuttle(City _city) {
 }
 
 Player& Player::build() {
-    if(!cards.contains(city)) {
+    if(cards.count(city)==0) {
         throw std::invalid_argument {"You must have the " + cityStr(city) + "card" + "to build a station!"};
     }
     board.build_station(city);
@@ -123,6 +123,12 @@ Player& Player::treat(City _city) {
     else {
         board[_city]--;
     }
+    return *this;
+}
+
+Player &Player::take_card(City city)
+{
+    cards.insert(city);
     return *this;
 }
 
