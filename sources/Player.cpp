@@ -1,146 +1,172 @@
+#include <iostream>
+#include <vector>
+
+#include "Board.hpp"
+#include "City.hpp"
+#include "Color.hpp"
 #include "Player.hpp"
-#include <string>
+
 using namespace std;
 using namespace pandemic;
 
-const int cards_taken = 5;
-
-Player& Player::drive(City _city) {
-    if (city == _city) {
-        throw std::invalid_argument {
-            "You cannot drive to the same city" + cityStr(_city)};
-    }
-
-    if (!Board::is_connect(city,_city)) {
-        throw std::invalid_argument {
-            "You chose cities that are not connected" };
-    }
-    city = _city;
-    arrive();
-    return *this;
-}
-
-Player& Player::fly_direct(City _city) {
-    if (city == _city) {
-        throw std::invalid_argument {
-            "You cannot fly to the same city" + cityStr(_city)};
-    }
-
-    if(cards.count(city)==0) {
-        throw std::invalid_argument {
-            "You don't have the card of" + cityStr(_city)};
-    }
-    cards.erase(city);
-    city = _city;
-    arrive();
-    return *this;
-}
-
-Player& Player::fly_charter(City _city) {
-    if (city == _city) {
-        throw std::invalid_argument {
-            "You cannot fly to the same city" + cityStr(_city)};
-    }
-
-    if(cards.count(city)==0) {
-        throw std::invalid_argument {
-            "You don't have the card of" + cityStr(_city)};
-    }
-    cards.erase(city);
-    city = _city;
-    arrive();
-    return *this;
-}
-
-Player& Player::fly_shuttle(City _city) { 
-    if (city == _city) {
-        throw std::invalid_argument {
-            "You cannot fly to the same city" + cityStr(_city)};
-        }
-    if (!board.is_station(_city) || !board.is_station(city)) {
-        throw std::invalid_argument {
-            "The cities don't have research stations"};
-    }
-    city = _city;
-    arrive();
-    return *this;
-}
-
-Player& Player::build() {
-    if(cards.count(city)==0) {
-        throw std::invalid_argument {"You must have the " + cityStr(city) + "card" + "to build a station!"};
-    }
-    board.build_station(city);
-    cards.erase(city);
-    return *this;
-}
-
-Player& Player::discover_cure(Color _color) {
-    int count =0;
-    if(!board.is_station(city)) {
-         throw std::invalid_argument { cityStr(city)+ "do not have research station"};
-    }
-
-    for(const auto& t : cards) {
-        if(Board::color_of(t) == _color) {
-            count++;
-        }
-    }
-
-    if(count < cards_taken) {
-        throw std::invalid_argument {"You only have" + std::to_string(count) + " cards left"};
-    }
-    count = 1;
-    for (auto it = cards.begin(); it != cards.end();count++) {
-        if(count == cards_taken) {
-            break;
-        }
-
-        if (Board::color_of(*it) == _color) {
-            it = cards.erase(it);
-        }
-        else {
-            ++it;
-        }
-    }
-    board.mark_cure(_color);
-    return *this;
-}
-
-Player& Player::treat(City _city) {
-    if (city == _city) {
-        throw std::invalid_argument {
-            "You cannot go to the same city" + cityStr(_city)};
-        }
-    if (board[_city] == 0) {
-                throw std::invalid_argument{"no more cubes in city " + cityStr(_city)};
-    }
-
-    if(board.cure_discoverd(_city)) {
-        board[_city] = 0;
-    }
-
-    else {
-        board[_city]--;
-    }
-    return *this;
-}
 
 Player &Player::take_card(City city)
 {
-    cards.insert(city);
+    _cards.insert(city);
+    return *this;
+}
+void Player::remove_cards()
+{
+    _cards.clear();
+}
+
+
+Player &Player::drive(City city)
+{
+    if (_city == city)
+    {
+        throw invalid_argument{"Illegal action! you are alraedy in city: " + city_to_string(city)};
+    }
+    if (!Board::is_connect(_city, city) && !Board::is_connect(city, _city))
+    {
+        throw invalid_argument{"Illegal action! this Cities: " + city_to_string(_city) + " and " + city_to_string(city) + ", are not connect."};
+    }
+    _city = city;
+    medic_arrive();
+    return *this;
+}
+
+Player &Player::fly_direct(City city)
+{
+    if (_city == city)
+    {
+        throw invalid_argument{"Illegal action! you are alraedy in city: " + city_to_string(city)};
+    }
+    if (_cards.count(city) == 0)
+    {
+        throw invalid_argument{"Illegal action! the player dosen\'t have " + city_to_string(city) + " card."};
+    }
+    _cards.erase(city);
+    _city = city;
+    medic_arrive();
+    return *this;
+}
+
+Player &Player::fly_charter(City city)
+{
+    if (_city == city)
+    {
+        throw invalid_argument{"Illegal action! you are alraedy in city: " + city_to_string(city)};
+    }
+    if (_cards.count(_city) == 0)
+    {
+        throw invalid_argument{"Illegal action! the player dosen\'t have " + city_to_string(_city) + " card."};
+    }
+    _cards.erase(_city);
+    _city = city;
+    medic_arrive();
+    return *this;
+}
+
+Player &Player::fly_shuttle(City city)
+{
+    if (_city == city)
+    {
+        throw invalid_argument{"Illegal action! you are alraedy in city: " + city_to_string(city)};
+    }
+    if (!_board.is_station(_city) || !_board.is_station(city))
+    {
+        throw invalid_argument{"Illegal action! the player dosen\'t have " + city_to_string(_city) + " card."};
+    }
+    _city = city;
+    medic_arrive();
+    return *this;
+}
+
+Player &Player::build()
+{
+    if (_cards.count(_city) == 0)
+    {
+        throw invalid_argument{"Illegal action! the player dosen\'t have " + city_to_string(_city) + " card."};
+    }
+    if (_board.is_station(_city))
+    {
+        cout << city_to_string(_city) << ", already have a research stations." << endl;
+        return *this;
+    }
+    _cards.erase(_city);
+    _board.build_station(_city);
+    return *this;
+}
+
+Player &Player::discover_cure(Color color)
+{
+    if (_board.cure_discoverd(color))
+    {
+        return *this;
+    }
+
+    if (_board.is_station(_city))
+    {
+        vector<City> to_throw = getCard(color);
+        if (to_throw.size() >= min)
+        {
+            for (size_t i = 0; i < min; i++)
+            {
+                _cards.erase(to_throw.at(i));
+            }
+            _board.mark_as_cure(color);
+        }
+        else
+        {
+            throw invalid_argument{"Illegal action! try to cure where is no 5 cards of: " + color_to_string(color)};
+        }
+    }
+    else
+    {
+        throw invalid_argument{"Illegal action! try to cure where is no research station in: " + city_to_string(_city)};
+    }
+    return *this;
+}
+
+Player &Player::treat(City city)
+{
+    if (_board[_city] == 0)
+    {
+        throw invalid_argument{"Illegal action! infection level is zero in: " + city_to_string(_city)};
+    }
+
+    if (_board.cure_discoverd(_city))
+    {
+        _board[_city] = 0;
+    }
+    else
+    {
+        _board[_city]--;
+    }
     return *this;
 }
 
 
+bool Player::checkCards(City city)
+{
+    return (_cards.count(city) == 1);
+}
 
+int Player::cardSize()
+{
+    return _cards.size();
+}
 
-
-
-
-
-
-
-
-
-
+vector<City> Player::getCard(Color color)
+{
+    vector<City> ans;
+    for (const auto &card : _cards)
+    {
+        if (Board::color_of(card) == color)
+        {
+            ans.push_back(card);
+        }
+    }
+    return ans;
+}

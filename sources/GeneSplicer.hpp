@@ -1,4 +1,5 @@
 #pragma once
+
 #include "Board.hpp"
 #include "City.hpp"
 #include "Color.hpp"
@@ -6,14 +7,17 @@
 
 namespace pandemic
 {
+    class GeneSplicer : public Player
+    {
+    private:
+        int min_cards = 5;
 
-class GeneSplicer: public Player {
-  public:
-    GeneSplicer(Board board, City city):Player(board, city){}
-    Player& discover_cure(Color c) override;
-     std::string role() const override{
-        return "GeneSplicer";
-    }
- };
-
+    public:
+        GeneSplicer(Board &_board, City c) : Player(_board, c) {}
+        GeneSplicer &discover_cure(Color color) override;
+        std::string role() const override
+        {
+            return "GeneSplicer";
+        }
+    };
 }

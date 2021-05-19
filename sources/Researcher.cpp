@@ -1,35 +1,32 @@
+#include "Board.hpp"
+#include "City.hpp"
+#include "Color.hpp"
+#include "Player.hpp"
 #include "Researcher.hpp"
+
 using namespace std;
 using namespace pandemic;
 
-
-Player& Researcher::discover_cure(Color color){
-    int i=0;
-    for(const auto& j : cards) {
-        if(Board::color_of(j) == color) {
-            i++;
-        }
+Researcher &Researcher::discover_cure(Color color)
+{
+    if (_board.cure_discoverd(color))
+    {
+        return *this;
     }
 
-    if(i< 5) {
-        throw std::invalid_argument {"Not enough cards!"};
+    vector<City> to_throw = getCard(color);
+    if (to_throw.size() >= min_cards)
+    {
+        for (size_t i = 0; i < min_cards; i++)
+        {
+            _cards.erase(to_throw.at(i));
+        }
+        _board.mark_as_cure(color);
     }
-    
-    i=1;
-
-    for(auto it = cards.begin();it!=cards.end();i++) {
-        if(i == 5) {
-            break;
-        }
-        if(Board::color_of(*it) == color) {
-            it= cards.erase(it);
-        }
-        else {
-            ++it;
-        }
+    else
+    {
+        throw invalid_argument{"Illegal action!" + color_to_string(color)};
     }
 
-    board.mark_cure(color);
     return *this;
-    
 }

@@ -1,42 +1,38 @@
 #pragma once
+#include <iostream>
+#include <set>
+#include <vector>
+#include "Board.hpp"
 #include "City.hpp"
 #include "Color.hpp"
-#include "Board.hpp"
-#include <set>
 
 namespace pandemic
 {
-class Player {
+    class Player
+    {
+    private:
+        int min = 5;
 
-protected:
-    std::string playerRole;
-    std::set<City> cards;
-    Board& board;
-    City city;
+    protected:
+        Board &_board;
+        City _city;
+        std::set<City> _cards;
 
-public:
-    Player(Board& _board,City _city) : board(_board),city(_city) {}
-
-    Player& drive(City c);
-
-    virtual Player& fly_direct(City c);
-
-    Player& fly_charter(City c);
-
-    Player& fly_shuttle(City c);
-
-    virtual Player& build();
-
-    virtual Player& discover_cure(Color c);
-    
-    virtual Player& treat(City city);
-
-   virtual std::string role() const =0;
-
-    Player& take_card(City city);
-
-    virtual void arrive(){};
-};
-
-
+    public:
+        Player(Board &board, City city) : _board(board), _city(city) {}
+        virtual std::string role() const = 0;
+        Player &take_card(City c);
+        void remove_cards();
+        virtual Player &drive(City city);
+        virtual Player &fly_direct(City city);
+        virtual Player &fly_charter(City city);
+        virtual Player &fly_shuttle(City city);
+        virtual Player &build();
+        virtual Player &discover_cure(Color color);
+        virtual Player &treat(City city);
+        virtual void medic_arrive(){};
+        bool checkCards(City city);
+        int cardSize();
+        std::vector<City> getCard(Color color);
+    };
 }

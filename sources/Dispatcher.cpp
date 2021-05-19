@@ -1,19 +1,31 @@
+#include "Board.hpp"
+#include "City.hpp"
+#include "Color.hpp"
 #include "Dispatcher.hpp"
+#include "Player.hpp"
+
 using namespace std;
 using namespace pandemic;
 
+Dispatcher &Dispatcher::fly_direct(City city)
+{
+    if (_city == city)
+    {
+        throw invalid_argument{"Illegal action! Dispatcher alraedy in city: " + city_to_string(city)};
+    }
 
-Player& Dispatcher::fly_direct(City c){
-    if (city==c ) {
-        throw std::invalid_argument {"You cannot fly to the same city" + cityStr(c)};
+    if (_board.is_station(_city))
+    {
+        _city = city;
+        return *this;
     }
-    if(board.is_station(city)) {
-        city = c;
+
+    if (_cards.count(city) == 1)
+    {
+        _cards.erase(city);
+        _city = city;
+        return *this;
     }
-    else {
-        return Player::fly_direct(c);
-    }
-    return *this;
+
+    throw invalid_argument{"Illegal action! Dispatcher try to fly direct from: " + city_to_string(_city) + " to: " + city_to_string(city)};
 }
-
-
